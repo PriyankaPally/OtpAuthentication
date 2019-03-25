@@ -16,6 +16,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,12 +29,15 @@ public class MainActivity extends AppCompatActivity {
     String phoneNumber,otp,verificationCode;
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     FirebaseAuth auth;
+    DatabaseReference rootReef,demoRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViews();
+        rootReef = FirebaseDatabase.getInstance().getReference();
+        demoRef = rootReef.child("demo");
         intiateClickListners();
         startFireBaseLogin();
     }
@@ -67,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 phoneNumber = etPhoneNumber.getText().toString();
+                demoRef.push().setValue(phoneNumber);
                 PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber,60, TimeUnit.SECONDS,MainActivity.this,mCallbacks);
             }
         });
